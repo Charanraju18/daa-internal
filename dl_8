@@ -1,3 +1,5 @@
+dl 10 experiment
+
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -103,3 +105,60 @@ plt.legend(['Train', 'Validation'], loc='upper left')
 
 plt.tight_layout()
 plt.show()
+
+
+
+
+
+experiment 8
+
+part one
+
+from tensorflow.keras.preprocessing.text import one_hot
+
+# Define the list of words
+words = ['apple', 'banana', 'cherry', 'apple', 'cherry', 'banana', 'apple']
+
+# Create a vocabulary of unique words
+vocab = set(words)
+
+# Assign a unique integer to each word in the vocabulary
+word_to_int = {word: i for i, word in enumerate(vocab)}
+
+# Convert the list of words to a list of integers using the vocabulary
+int_words = [word_to_int[word] for word in words]
+
+# Perform one-hot encoding of the integer sequence
+one_hot_words = []
+for int_word in int_words:
+    one_hot_word = [0] * len(vocab)
+    one_hot_word[int_word] = 1
+    one_hot_words.append(one_hot_word)
+
+print(one_hot_words)
+
+
+part two
+
+import string
+
+# Define the input string
+input_string = 'hello world'
+
+# Create a vocabulary of unique characters
+vocab = set(input_string)
+
+# Assign a unique integer to each character in the vocabulary
+char_to_int = {char: i for i, char in enumerate(vocab)}
+
+# Convert the input string to a list of integers using the vocabulary
+int_chars = [char_to_int[char] for char in input_string]
+
+# Perform one-hot encoding of the integer sequence
+one_hot_chars = []
+for int_char in int_chars:
+    one_hot_char = [0] * len(vocab)
+    one_hot_char[int_char] = 1
+    one_hot_chars.append(one_hot_char)
+
+print(one_hot_chars)
