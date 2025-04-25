@@ -1,0 +1,71 @@
+Selective Repeat ARQ is also form of ARQ protocol in which only 
+suspected or damaged or lost data frames are only retransmitted. This technique is similar to 
+Go-Back-N ARQ though much more efficient than the Go-Back-N ARQ technique due to 
+reason that it reduces number of retransmission. In this, the sender only retransmits frames 
+for which NAK is received. But this technique is used less because of more complexity at 
+sender and receiver and each frame must be needed to acknowledged individually. 
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define WINDOW_SIZE 4
+#define TOTAL_FRAMES 10
+
+// Frame structure
+typedef struct {
+    int frame_no;
+    int is_acknowledged;
+} Frame;
+
+// Function to send frames in the current window
+void send_frames(Frame frames[], int start, int window_size) {
+    printf("Sending frames: ");
+    for (int i = start; i < start + window_size && i < TOTAL_FRAMES; i++) {
+        if (!frames[i].is_acknowledged) {
+            printf("%d ", frames[i].frame_no);
+        }
+    }
+    printf("\n");
+}
+
+// Function to receive acknowledgment or simulate loss
+void receive_ack(Frame frames[], int start, int window_size) {
+    for (int i = start; i < start + window_size && i < TOTAL_FRAMES; i++) {
+        if (!frames[i].is_acknowledged) {
+            if (rand() % 5 != 0) { // 80% success rate
+                frames[i].is_acknowledged = 1;
+                printf("Acknowledgment received for frame %d\n", frames[i].frame_no);
+            } else {
+                printf("Frame %d lost, needs retransmission\n", frames[i].frame_no);
+            }
+        }
+    }
+}
+
+int main() {
+    Frame frames[TOTAL_FRAMES];
+    srand(time(0));
+
+    // Initialize all frames
+    for (int i = 0; i < TOTAL_FRAMES; i++) {
+        frames[i].frame_no = i;
+        frames[i].is_acknowledged = 0;
+    }
+
+    int base = 0;
+    while (base < TOTAL_FRAMES) {
+        send_frames(frames, base, WINDOW_SIZE);
+        receive_ack(frames, base, WINDOW_SIZE);
+
+        // Slide the window forward past acknowledged frames
+        while (base < TOTAL_FRAMES && frames[base].is_acknowledged) {
+            base++;
+        }
+
+        printf("\n");
+    }
+
+    printf("All frames successfully transmitted!\n");
+    return 0;
+}
